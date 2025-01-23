@@ -31,16 +31,18 @@ export default function InitGame({ setRoom, setOrientation, setPlayers }) {
         title="Select Room to Join"
         contentText="Enter a valid room ID to join the room"
         // tham gia vào 1 phòng chơi
+        // client cần emit 1 sự kiện joinRoom mà sẽ dc xử lý bên server, 
+        // data gồm id của phòng mà người chơi định tham gia
         handleContinue={() => {
-            if(!roomInput) return;
-            socket.emit("joinRoom", {roomId: roomInput}, (response) => {
-                if(response.error) return setRoomError(response.messeage);
-                console.log("response", response);
+            if(!roomInput) return; //nếu thông tin phòng dc nhập k hợp lệ, return
+            socket.emit("joinRoom", {roomId: roomInput}, (response) => { // response từ server
+                if(response.error) return setRoomError(response.messeage); // nếu trả về lỗi thì gán lỗi đó cho roomError và thoát
+                console.log("response", response); //
                 setRoom(response?.roomId);
                 setPlayers(response?.players);
                 setOrientation("black");
                 setRoomDialogOpen(false);
-            })
+            });
         }}
       >
         <TextField
